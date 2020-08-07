@@ -25,6 +25,13 @@ class NeuralNetwork {
         this.layers.push(new Layer(this.output_count, previous_layer, initializer))
     }
 
+    set_activation_functions(input_activation, hidden_activations, output_activation) {
+        const activation_functions = [input_activation, ...hidden_activations, output_activation]
+        for (let i in activation_functions) {
+            this.layers[i].activation_function = activation_functions[i]
+        }
+    }
+
     input_layer() {
         return this.layers[0]
     }
@@ -48,6 +55,7 @@ class NeuralNetwork {
 
 class Layer {
     constructor(node_count, previous_layer, initializer) {
+        this.activation_function = sigmoid
         this.size = node_count
         this.previous_layer = previous_layer
         if (previous_layer) {
@@ -77,7 +85,7 @@ class Layer {
         if (!this.previous_layer) {
             return
         }
-        this.values = this.weights.dot(this.previous_layer.values).add(this.biasses).for_each(sigmoid)
+        this.values = this.weights.dot(this.previous_layer.values).add(this.biasses).for_each(this.activation_function)
     }
 }
 
